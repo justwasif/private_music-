@@ -22,10 +22,21 @@ export const login = (req, res) => {
 
   req.session.spotifyState = state;
 
-  const authUrl =
-    getAuthorizationUrl(state);
+  const authUrl = getAuthorizationUrl(state);
 
-  res.redirect(authUrl);
+  // Persist the state before leaving our server for Spotify.
+  req.session.save((err) => {
+    if (err) {
+      console.error("Failed to save Spotify OAuth state:", err);
+
+      return res.status(500).json({
+        success: false,
+        message: "Failed to start Spotify authentication",
+      });
+    }
+
+    res.redirect(authUrl);
+  });
 };
 
 
@@ -33,13 +44,9 @@ export const login = (req, res) => {
 // CALLBACK
 // --------------------------------------------------
 
-export const callback = async (
-  req,
-  res
-) => {
+export const callback = async (req, res) => {
   try {
-    const { code, state, error } =
-      req.query;
+    const { code, state, error } = req.query;
 
     if (error) {
       return res.status(400).json({
@@ -48,10 +55,7 @@ export const callback = async (
       });
     }
 
-    if (
-      !state ||
-      state !== req.session.spotifyState
-    ) {
+    if (!state || state !== req.session.spotifyState) {
       return res.status(400).json({
         success: false,
         message: "Invalid OAuth state",
@@ -60,33 +64,36 @@ export const callback = async (
 
     delete req.session.spotifyState;
 
-    const tokenData =
-      await exchangeCodeForToken(code);
+    const tokenData = await exchangeCodeForToken(code);
 
     req.session.spotify = {
       accessToken: tokenData.access_token,
-
-      refreshToken:
-        tokenData.refresh_token,
-
+      refreshToken: tokenData.refresh_token,
       expiresAt:
-        Date.now() +
-        tokenData.expires_in * 1000,
+        Date.now() + tokenData.expires_in * 1000,
     };
 
-    res.redirect(env.frontendUrl);
+    // Persist the Spotify tokens before redirecting to React.
+    req.session.save((err) => {
+      if (err) {
+        console.error("Failed to save Spotify session:", err);
 
+        return res.status(500).json({
+          success: false,
+          message: "Failed to save Spotify session",
+        });
+      }
+
+      res.redirect(env.frontendUrl);
+    });
   } catch (error) {
-
     console.error(
-      error.response?.data ||
-      error.message
+      error.response?.data || error.message
     );
 
     res.status(500).json({
       success: false,
-      message:
-        "Spotify authentication failed",
+      message: "Spotify authentication failed",
     });
   }
 };
@@ -96,36 +103,26 @@ export const callback = async (
 // CURRENT USER
 // --------------------------------------------------
 
-export const getMe = async (
-  req,
-  res
-) => {
+export const getMe = async (req, res) => {
   try {
+    const spotify = req.session.spotify;
 
-    const spotify =
-      req.session.spotify;
-
-    const user =
-      await getCurrentUser(
-        spotify.accessToken
-      );
+    const user = await getCurrentUser(
+      spotify.accessToken
+    );
 
     res.json({
       success: true,
       data: user,
     });
-
   } catch (error) {
-
     console.error(
-      error.response?.data ||
-      error.message
+      error.response?.data || error.message
     );
 
     res.status(500).json({
       success: false,
-      message:
-        "Failed to fetch Spotify user",
+      message: "Failed to fetch Spotify user",
     });
   }
 };
@@ -135,48 +132,37 @@ export const getMe = async (
 // TOP TRACKS
 // --------------------------------------------------
 
-export const topTracks = async (
-  req,
-  res
-) => {
+export const topTracks = async (req, res) => {
   try {
-
-    const spotify =
-      req.session.spotify;
+    const spotify = req.session.spotify;
 
     const {
       timeRange = "long_term",
       limit = 5,
     } = req.query;
 
-    const data =
-      await getTopTracks(
-        spotify.accessToken,
-        {
-          timeRange,
-          limit,
-        }
-      );
+    const data = await getTopTracks(
+      spotify.accessToken,
+      {
+        timeRange,
+        limit,
+      }
+    );
 
     res.json({
       success: true,
-
       data: data.items,
     });
-
   } catch (error) {
-
     console.error(
-      error.response?.data ||
-      error.message
+      error.response?.data || error.message
     );
 
     res.status(
       error.response?.status || 500
     ).json({
       success: false,
-      message:
-        "Failed to fetch top tracks",
+      message: "Failed to fetch top tracks",
     });
   }
 };
@@ -186,39 +172,28 @@ export const topTracks = async (
 // RECENT HISTORY
 // --------------------------------------------------
 
-export const recentHistory = async (
-  req,
-  res
-) => {
+export const recentHistory = async (req, res) => {
   try {
+    const spotify = req.session.spotify;
 
-    const spotify =
-      req.session.spotify;
-
-    const data =
-      await getRecentlyPlayed(
-        spotify.accessToken
-      );
+    const data = await getRecentlyPlayed(
+      spotify.accessToken
+    );
 
     res.json({
       success: true,
-
       data: data.items,
     });
-
   } catch (error) {
-
     console.error(
-      error.response?.data ||
-      error.message
+      error.response?.data || error.message
     );
 
     res.status(
       error.response?.status || 500
     ).json({
       success: false,
-      message:
-        "Failed to fetch history",
+      message: "Failed to fetch history",
     });
   }
 };
@@ -228,17 +203,22 @@ export const recentHistory = async (
 // LOGOUT
 // --------------------------------------------------
 
-export const logout = (
-  req,
-  res
-) => {
+export const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Failed to destroy session:", err);
 
-  req.session.destroy(() => {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to logout",
+      });
+    }
+
+    res.clearCookie("connect.sid");
 
     res.json({
       success: true,
       message: "Logged out",
     });
-
   });
-};                      
+};
