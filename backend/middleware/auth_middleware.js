@@ -1,0 +1,59 @@
+import {
+  refreshAccessToken,
+} from "../service/spotifyAuth_services.js";
+
+export const requireSpotifyAuth = async (
+  req,
+  res,
+  next
+) => {
+  const spotify = req.session.spotify;
+
+  if (!spotify) {
+    return res.status(401).json({
+      success: false,
+      message: "Spotify authentication required",
+    });
+  }
+
+  if (
+    spotify.expiresAt &&
+    Date.now() < spotify.expiresAt - 60 * 1000
+  ) {
+    return next();
+  }
+
+  if (!spotify.refreshToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Spotify session expired. Please login again.",
+    });
+  }
+
+  try {
+    const tokenData = await refreshAccessToken(
+      spotify.refreshToken
+    );
+
+    req.session.spotify = {
+      ...spotify,
+      accessToken: tokenData.access_token,
+      refreshToken:
+        tokenData.refresh_token || spotify.refreshToken,
+      expiresAt:
+        Date.now() + tokenData.expires_in * 1000,
+    };
+
+    next();
+  } catch (error) {
+    console.error(
+      error.response?.data ||
+      error.message
+    );
+
+    return res.status(401).json({
+      success: false,
+      message: "Spotify session expired. Please login again.",
+    });
+  }
+};
