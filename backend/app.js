@@ -3,9 +3,7 @@ import cors from "cors";
 import session from "express-session";
 
 import env from "./config/env.js";
-
-import spotifyRoutes from "./routes/spotify_routes.js";
-
+import spotifyRoutes from "./routes/spotify.routes.js";
 
 const app = express();
 
@@ -28,7 +26,6 @@ const isLocalDevOrigin = (origin) => {
   }
 };
 
-// Middleware
 app.use(
   cors({
     origin(origin, callback) {
@@ -50,16 +47,11 @@ app.use(
 
 app.use(express.json());
 
-
-// Session
 app.use(
   session({
     secret: env.sessionSecret,
-
     resave: false,
-
     saveUninitialized: false,
-
     cookie: {
       httpOnly: true,
       secure: false,
@@ -68,24 +60,13 @@ app.use(
   })
 );
 
+app.use("/api/v1/spotify", spotifyRoutes);
 
-// Routes
-app.use(
-  "/api/v1/spotify",
-  spotifyRoutes
-);
-
-
-// Health check
-app.get(
-  "/api/v1/health",
-  (req, res) => {
-    res.json({
-      success: true,
-      message: "Server is running",
-    });
-  }
-);
-
+app.get("/api/v1/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "Server is running",
+  });
+});
 
 export default app;
