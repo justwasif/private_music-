@@ -1,0 +1,399 @@
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rust);
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.btn--primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #1a1409;
+  font-weight: 600;
+}
+
+.btn--primary:hover {
+  background: #e8b658;
+}
+
+.btn--ghost {
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.btn--ghost:hover {
+  color: var(--cream);
+  border-color: var(--line);
+}
+
+/* ---------- page shells ---------- */
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.page--center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ---------- login ---------- */
+
+.login {
+  max-width: 420px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login__mark {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 20px;
+}
+
+.login__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--rust);
+  opacity: 0.5;
+}
+
+.login__ring--inner {
+  inset: 22px;
+  border-color: var(--gold);
+  opacity: 0.9;
+}
+
+.login__title {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+
+.login__sub {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 28px;
+  font-size: 14px;
+}
+
+.login__error {
+  color: var(--rust);
+  font-size: 13px;
+  margin: -12px 0 20px;
+}
+
+.login__note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 20px;
+  max-width: 340px;
+}
+
+/* ---------- topbar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar__title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar__name {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.panel__title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ---------- range picker ---------- */
+
+.range-picker {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-raised);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.range-picker__btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.range-picker__btn.is-active {
+  background: var(--gold);
+  color: #1a1409;
+  font-weight: 600;
+}
+
+/* ---------- vinyl art (signature element) ---------- */
+
+.vinyl {
+  position: relative;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #0c0a08;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.vinyl__grooves {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    #201a14 0px,
+    #201a14 1px,
+    #0c0a08 2px,
+    #0c0a08 3px
+  );
+}
+
+.vinyl__label {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  object-fit: cover;
+  width: 56%;
+  height: 56%;
+}
+
+.vinyl__label--empty {
+  background: linear-gradient(135deg, var(--rust), var(--gold));
+}
+
+.vinyl__hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vinyl--spin {
+  animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- top tracks ---------- */
+
+.top-tracks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.top-tracks__item {
+  display: grid;
+  grid-template-columns: 28px auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+
+.top-tracks__item:hover {
+  background: var(--surface-raised);
+}
+
+.top-tracks__item:hover .vinyl {
+  animation: spin 6s linear infinite;
+}
+
+.top-tracks__rank {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--rust);
+  font-weight: 600;
+}
+
+.top-tracks__meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-tracks__name {
+  font-size: 14px;
+  color: var(--cream);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-tracks__name:hover {
+  color: var(--gold);
+}
+
+.top-tracks__artist {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-tracks__duration {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- history / tape ---------- */
+
+.tape {
+  display: flex;
+  flex-direction: column;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.tape__row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 4px 14px;
+  padding: 10px 6px;
+  border-bottom: 1px dashed var(--line);
+  font-size: 13px;
+}
+
+.tape__row:last-child {
+  border-bottom: none;
+}
+
+.tape__time {
+  color: var(--rust);
+  font-size: 11px;
+  align-self: center;
+}
+
+.tape__track {
+  color: var(--cream);
+  grid-column: 2;
+}
+
+.tape__artist {
+  color: var(--muted);
+  font-size: 12px;
+  grid-column: 2;
+}
