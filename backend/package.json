@@ -1,12 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Spotify API backend",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev":"node index.js",
-    "start": "mode index.js"
+    "dev": "node --watch index.js",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
